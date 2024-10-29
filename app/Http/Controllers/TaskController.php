@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -72,16 +73,31 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $task)
+    public function update(Request $request, Task $task): RedirectResponse
     {
-        //
+        // Authorize the action using the Task model
+        Gate::authorize('update', $task);
+
+        $validated = $request->validate([
+            'task' => 'required|string|max:255', // Validate task title
+            'taskdescription' => 'required|string', // Validate task description
+        ]);
+
+        $task->update($validated);
+
+        return redirect(route('tasks.index'));
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(Task $task): RedirectResponse
     {
-        //
+        Gate::authorize('delete', $task);
+
+        $task->delete();
+
+        return redirect(route('tasks.index'));
     }
 }

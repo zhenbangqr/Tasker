@@ -1,5 +1,18 @@
 <script setup>
-defineProps(['task', 'users']);
+import Dropdown from '@/Components/Dropdown.vue';
+import InputError from '@/Components/InputError.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
+const props = defineProps(['task', 'users']); // Accept 'task' and 'users' props
+
+const form = useForm({
+    task: props.task.task,
+    taskdescription: props.task.taskdescription,
+});
+
+const editing = ref(false);
 </script>
 
 <template>
@@ -19,11 +32,54 @@ defineProps(['task', 'users']);
                             Unknown
                         </span>
                     </span>
+                    <small v-if="task.created_at !== task.updated_at" class="text-sm text-gray-600"> &middot; edited</small>
                     <small class="ml-2 text-sm text-gray-600">{{ new Date(task.created_at).toLocaleString() }}</small>
                 </div>
+
+                <Dropdown>
+                    <template #trigger>
+                        <button>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                            </svg>
+                        </button>
+                    </template>
+                    <template #content>
+                        <button class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 transition duration-150 ease-in-out" @click="editing = true">
+                            Edit
+                        </button>
+                        <button class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 transition duration-150 ease-in-out" @click="form.delete(route('tasks.destroy', task.id))">
+                            Delete
+                        </button>
+                    </template>
+                </Dropdown>
             </div>
 
-            <div>
+            <form v-if="editing" @submit.prevent="form.put(route('tasks.update', task.id), { onSuccess: () => editing = false })">
+                <div>
+                    <label for="task" class="block text-sm font-medium text-gray-700">Title:</label>
+                    <input type="text" id="task" v-model="form.task" class="mt-1 block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+                    <InputError :message="form.errors.task" class="mt-2" />
+                </div>
+
+                <div class="mt-4">
+                    <label for="taskdescription" class="block text-sm font-medium text-gray-700">Description:</label>
+                    <textarea id="taskdescription" v-model="form.taskdescription" class="mt-1 block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"></textarea>
+                    <InputError :message="form.errors.taskdescription" class="mt-2" />
+                </div>
+
+                <div class="mt-4">
+                    <label for="collaborators" class="block text-sm font-medium text-gray-700">Collaborators:</label>
+                    <p>Collaborator selection (to be implemented)</p>
+                </div>
+
+                <div class="space-x-2">
+                    <PrimaryButton class="mt-4">Save</PrimaryButton>
+                    <button class="mt-4" @click="editing = false; form.reset(); form.clearErrors()">Cancel</button>
+                </div>
+            </form>
+
+            <div v-else>
                 <p class="mt-4 text-lg text-gray-900 font-bold">Title:</p>
                 <p class="mt-4 text-base text-gray-900">{{ task.task }}</p>
 
@@ -38,8 +94,6 @@ defineProps(['task', 'users']);
                 </ul>
                 <p v-else>No collaborators</p>
             </div>
-
         </div>
-
     </div>
 </template>
