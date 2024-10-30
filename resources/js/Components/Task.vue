@@ -110,6 +110,34 @@ const editing = ref(false);
                 </PrimaryButton>
             </div>
 
+            <div class="mt-4">
+                <PrimaryButton @click.prevent="form.put(route('tasks.addToArchive', task.id))">
+                    {{ task.status === 'Archived' ? 'Unarchive' : 'Move to archive' }}
+                </PrimaryButton>
+            </div>
+
         </div>
     </div>
 </template>
+
+<script>
+export default {
+    computed: {
+        filteredTasks() {
+            return this.tasks.filter(task => {
+                return task.user_id === this.current_user || task.user.some(user => user.id === this.current_user);
+            });
+        },
+        pendingTasks() {
+            return this.filteredTasks.filter(task => task.status !== 'Done');
+        },
+        doneTasks() {
+            return this.filteredTasks.filter(task => task.status === 'Done');
+        },
+        archivedTasks() {
+            return this.filteredTasks.filter(task => task.status === 'Archived');
+        }
+    }
+};
+</script>
+

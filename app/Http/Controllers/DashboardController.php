@@ -10,18 +10,17 @@ use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 
-class TaskController extends Controller
+class DashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index()
     {
-        return Inertia::render('Task/Index', [
+        return Inertia::render('Dashboard', [
             'tasks' => Task::with('user:id,name')->latest()->get(),
             'users' => User::all(),
-            'current_user' => auth()->user()->id,
-
+            'current_user' => auth()->user(),
         ]);
     }
 
@@ -95,18 +94,6 @@ class TaskController extends Controller
     {
 
         $task->status = ($task->status === 'Done') ? 'Pending' : 'Done';
-        $task->save();
-
-        return redirect(route('dashboard'));
-    }
-
-    public function addToArchive(Request $request, Task $task): RedirectResponse
-    {
-        if ($task->status === 'Archived') {
-            $task->status = 'Pending'; // Or restore to its previous status
-        } else {
-            $task->status = 'Archived';
-        }
         $task->save();
 
         return redirect(route('dashboard'));

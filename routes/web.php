@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ArchivedTaskController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -30,5 +32,15 @@ Route::resource('tasks', TaskController::class)
     ->middleware(['auth', 'verified']);
 
 Route::put('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+
+Route::put('/tasks/{task}/add-to-archive', [TaskController::class, 'addToArchive'])->name('tasks.addToArchive');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::get('/archived-tasks', [ArchivedTaskController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('archived-tasks.index');
 
 require __DIR__.'/auth.php';
