@@ -5,11 +5,12 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const props = defineProps(['task', 'users']); // Accept 'task' and 'users' props
+const props = defineProps(['task', 'users', 'current_user']);
 
 const form = useForm({
     task: props.task.task,
     taskdescription: props.task.taskdescription,
+    assigned_to: props.task.user.map(user => user.id),
 });
 
 const editing = ref(false);
@@ -69,8 +70,11 @@ const editing = ref(false);
                 </div>
 
                 <div class="mt-4">
-                    <label for="collaborators" class="block text-sm font-medium text-gray-700">Collaborators:</label>
-                    <p>Collaborator selection (to be implemented)</p>
+                    <label class="block font-medium text-sm text-gray-700">Collaborators:</label>
+                    <div class="mt-2" v-for="user in users" :key="user.id">
+                        <input v-if="user.id !== current_user" type="checkbox" :id="`user-${user.id}`" :value="user.id" v-model="form.assigned_to">
+                        <label v-if="user.id !== current_user" :for="`user-${user.id}`" class="ml-2">{{ user.name }}</label>
+                    </div>
                 </div>
 
                 <div class="space-x-2">
@@ -94,6 +98,18 @@ const editing = ref(false);
                 </ul>
                 <p v-else>No collaborators</p>
             </div>
+
+            <div class="mt-4">
+                <p class="text-lg text-gray-900 font-bold">Status:</p>
+                <p class="text-base text-gray-900">{{ task.status }}</p>
+            </div>
+
+            <div class="mt-4">
+                <PrimaryButton @click="form.put(route('tasks.updateStatus', task.id))">
+                    {{ task.status === 'Pending' ? 'Mark as Done' : 'Mark as Pending' }}
+                </PrimaryButton>
+            </div>
+
         </div>
     </div>
 </template>

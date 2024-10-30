@@ -67,7 +67,7 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
+
     }
 
     /**
@@ -82,11 +82,22 @@ class TaskController extends Controller
             'task' => 'required|string|max:255', // Validate task title
             'taskdescription' => 'required|string', // Validate task description
         ]);
-
         $task->update($validated);
+
+        $assignedUsers = $request->input('assigned_to', []);
+        $task->user()->sync($assignedUsers);
 
         return redirect(route('tasks.index'));
 
+    }
+
+    public function updateStatus(Request $request, Task $task): RedirectResponse
+    {
+
+        $task->status = ($task->status === 'Done') ? 'Pending' : 'Done';
+        $task->save();
+
+        return redirect(route('tasks.index'));
     }
 
     /**

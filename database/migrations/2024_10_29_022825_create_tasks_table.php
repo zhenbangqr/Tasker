@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('task');
             $table->string('taskdescription');
+            $table->string('status')->default('Pending');
             $table->timestamps();
         });
 

@@ -29,4 +29,6 @@ Route::resource('tasks', TaskController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
 
+Route::put('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+
 require __DIR__.'/auth.php';
