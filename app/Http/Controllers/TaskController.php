@@ -41,12 +41,14 @@ class TaskController extends Controller
         $validated = $request->validate([
             'task' => 'required|string|max:255',
             'taskdescription' => 'required|string',
+            'due' => 'required|date',
         ]);
 
         $task = $request->user()->tasks()->create([
             'task' => $validated['task'],
             'taskdescription' => $validated['taskdescription'],
             'user_id' => $request->user()->id,
+            'due' => $validated['due'],
         ]);
 
         $task->user()->attach($request->assigned_to);
@@ -81,6 +83,7 @@ class TaskController extends Controller
         $validated = $request->validate([
             'task' => 'required|string|max:255', // Validate task title
             'taskdescription' => 'required|string', // Validate task description
+            'due' => 'required|date'
         ]);
         $task->update($validated);
 

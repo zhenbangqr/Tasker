@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -57,6 +56,13 @@ const showingNavigationDropdown = ref(false);
                                     :active="route().current('archived-tasks.index')">
                                     Archived Tasks
                                 </NavLink>
+
+                                <NavLink
+                                    :href="route('tasktalk.index')"
+                                    :active="route().current('tasktalk.index')">
+                                    TaskTalk
+                                </NavLink>
+
                             </div>
                         </div>
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArchivedTaskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TaskTalkController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,5 +43,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::get('/archived-tasks', [ArchivedTaskController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('archived-tasks.index');
+
+Route::resource('tasktalk', TaskTalkController::class)
+    ->only(['index', 'store'])
+    ->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';

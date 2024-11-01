@@ -10,7 +10,7 @@ class Task extends Model // This should be Task, not Dashboard
 {
 use HasFactory;
 
-protected $fillable = ['task', 'taskdescription', 'user_id', 'status'];
+protected $fillable = ['task', 'taskdescription', 'user_id', 'status', 'due'];
 
 public function user(): BelongsToMany
 {

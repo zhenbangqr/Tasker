@@ -5,12 +5,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const props = defineProps(['task', 'users', 'current_user']);
+const props = defineProps(['task', 'users', 'current_user', 'due']);
 
 const form = useForm({
     task: props.task.task,
     taskdescription: props.task.taskdescription,
     assigned_to: props.task.user.map(user => user.id),
+    due: props.due,
 });
 
 const editing = ref(false);
@@ -77,6 +78,15 @@ const editing = ref(false);
                     </div>
                 </div>
 
+                <div class="mt-4">
+                    <label class="block font-medium text-sm text-gray-700">Due Date:</label>
+                    <input
+                        type="date"
+                        v-model="form.due"
+                        class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                    />
+                </div>
+
                 <div class="space-x-2">
                     <PrimaryButton class="mt-4">Save</PrimaryButton>
                     <button class="mt-4" @click="editing = false; form.reset(); form.clearErrors()">Cancel</button>
@@ -102,6 +112,11 @@ const editing = ref(false);
             <div class="mt-4">
                 <p class="text-lg text-gray-900 font-bold">Status:</p>
                 <p class="text-base text-gray-900">{{ task.status }}</p>
+            </div>
+
+            <div class="mt-4">
+                <p class="text-lg text-gray-900 font-bold">Due date:</p>
+                <p class="text-base text-gray-900">{{ task.due }}</p>
             </div>
 
             <div class="mt-4">

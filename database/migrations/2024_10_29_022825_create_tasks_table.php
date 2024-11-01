@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('task');
             $table->string('taskdescription');
             $table->string('status')->default('Pending');
+            $table->date('due');
             $table->timestamps();
         });
 
